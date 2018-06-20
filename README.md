@@ -1,0 +1,116 @@
+# Class
+Класс для работы со строками CString
+#define _CRT_SECURE_NO_WARNINGS
+ 
+#include <iostream>
+#include <iomanip>
+#include <string>
+#include <vector>
+ 
+using namespace std;
+ 
+void input(vector<wstring>&, bool begin);
+void toUpper(vector<wstring>&);
+void del(vector<wstring>&);
+void print(vector<wstring>&);
+ 
+int main()
+{
+    wcin.imbue(locale("rus_rus.866"));
+    wcout.imbue(locale("rus_rus.866"));
+    vector<wstring> text;
+    wstring buf;
+    wcout << L"Введите строку:\n";
+    getline(wcin, buf);
+    text.emplace_back(buf);
+    wcout << endl;
+    for (;;)
+    {
+        int menu = 0;
+        wcout << L"Выберите пункт меню:\n"
+            L"1: Ввести следующую строку\n"
+            L"2: Добавить строку в начало\n"
+            L"3: Замена всех строчных букв прописными\n"
+            L"4: Удаление символов с начала строки\n"
+            L"5: Выход\n";
+        wcin >> menu;
+        switch (menu)
+        {
+        case 1:
+            input(text, false);
+            break;
+        case 2:
+            input(text, true);
+            break;
+        case 3:
+            toUpper(text);
+            break;
+        case 4:
+            del(text);
+            break;
+        case 5:
+            return 0;
+        default:
+            wcout << L"Попробуйте снова\n";
+            wcin.clear();
+            wcin.ignore(numeric_limits<streamsize>::max(), '\n');
+            continue;
+        }
+    }
+}
+ 
+void input(vector<wstring>& t, bool begin)
+{
+    wstring buf;
+    wcout << L"Введите строку:\n";
+    wcin.clear();
+    wcin.ignore(numeric_limits<streamsize>::max(), '\n');
+    getline(wcin, buf);
+    t.insert(begin ? t.begin() : t.end(), buf);
+    print(t);
+}
+ 
+void toUpper(vector<wstring>& t)
+{
+m2: size_t line = t.size() + 1;
+    wcout << L"Введите номер строки:" << endl;
+    wcin >> line;
+    line--;
+    if (line > t.size() - 1)
+    {
+        wcout << L"Попробуйте снова\n";
+        wcin.clear();
+        wcin.ignore(numeric_limits<streamsize>::max(), '\n');
+        goto m2;
+    }
+    use_facet<ctype<wchar_t>>(locale()).toupper(&t[line][0], &t[line][0] + t[line].size());
+    print(t);
+}
+ 
+void del(vector<wstring>& t)
+{
+m3: size_t line = t.size() + 1;
+    wcout << L"Введите номер строки: ";
+    wcin >> line;
+    line--;
+    size_t nums = t[line].length() + 1;
+    wcout << L"Количество символов: ";
+    wcin >> nums;
+    if (line > t.size() - 1 || nums > t[line].length())
+    {
+        wcout << L"Попробуйте снова\n";
+        wcin.clear();
+        wcin.ignore(numeric_limits<streamsize>::max(), '\n');
+        goto m3;
+    }
+    t[line].erase(0, nums);
+    print(t);
+}
+ 
+void print(vector<wstring>&t)
+{
+    wcout << L"\nТекст:\n";
+    for (wstring s : t)
+        wcout << s << endl;
+    wcout << endl;
+}
